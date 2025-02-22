@@ -9,6 +9,7 @@
 #include "db_parser.h"
 #include "product_parser.h"
 #include "util.h"
+#include "mydatastore.h"
 
 using namespace std;
 struct ProdNameSorter {
@@ -29,7 +30,7 @@ int main(int argc, char* argv[])
      * Declare your derived DataStore object here replacing
      *  DataStore type to your derived type
      ****************/
-    DataStore ds;
+    MyDataStore ds;
 
 
 
@@ -100,10 +101,36 @@ int main(int argc, char* argv[])
                 done = true;
             }
 	    /* Add support for other commands here */
-
-
-
-
+	    else if(cmd == "VIEWCART") {
+		string username;
+		if(!(ss>>username)) cout<<"Invalid username"<<endl;
+		else {
+		    username = convToLower(username);
+		    ds.viewCart(username);
+		}
+	    }
+	    else if(cmd == "BUYCART") {
+		string username;
+		if(!(ss>>username)) cout<<"Invalid username"<<endl;
+                else {
+                    username = convToLower(username);
+                    ds.buyCart(username);
+                }
+	    }
+	    else if(cmd == "ADD") {
+    		string username;
+    		int hitIndex;
+    		if(!(ss >> username >> hitIndex)) {
+        	    cout << "Invalid request" << endl;
+    		}
+    		else if(hitIndex < 1 || hitIndex > (int)hits.size()) {
+        	    cout << "Invalid request" << endl;
+    		}
+    		else {
+        	    username = convToLower(username);
+        	    ds.addToCart(username, hits[hitIndex - 1]);
+    		}
+	    }
             else {
                 cout << "Unknown command" << endl;
             }
@@ -120,7 +147,7 @@ void displayProducts(vector<Product*>& hits)
     	cout << "No results found!" << endl;
     	return;
     }
-    std::sort(hits.begin(), hits.end(), ProdNameSorter());
+    //std::sort(hits.begin(), hits.end(), ProdNameSorter());
     for(vector<Product*>::iterator it = hits.begin(); it != hits.end(); ++it) {
         cout << "Hit " << setw(3) << resultNo << endl;
         cout << (*it)->displayString() << endl;

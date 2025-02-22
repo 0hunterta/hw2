@@ -31,7 +31,7 @@ void User::deductAmount(double amt)
 {
     balance_ -= amt;
 }
-
+int User::getType() const { return type_; }
 void User::dump(std::ostream& os)
 {
     os << name_ << " "  << balance_ << " " << type_ << endl;
